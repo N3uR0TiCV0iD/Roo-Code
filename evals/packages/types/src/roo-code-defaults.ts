@@ -53,6 +53,7 @@ export const rooCodeDefaults: RooCodeSettings = {
 	maxOpenTabsContext: 20,
 	maxWorkspaceFiles: 200,
 	showRooIgnoredFiles: true,
+	betterPrivacy: false,
 	maxReadFileLine: -1, // -1 to enable full file reading.
 
 	language: "en",

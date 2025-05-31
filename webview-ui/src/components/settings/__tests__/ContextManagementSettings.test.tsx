@@ -108,6 +108,8 @@ describe("ContextManagementSettings", () => {
 		expect(defaultProps.setCachedStateField).toHaveBeenCalledWith("showRooIgnoredFiles", true)
 	})
 
+	//TODO: Add test(?)
+
 	it("renders max read file line controls", () => {
 		const propsWithMaxReadFileLine = {
 			...defaultProps,

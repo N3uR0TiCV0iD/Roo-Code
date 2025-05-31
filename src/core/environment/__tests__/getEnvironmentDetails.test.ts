@@ -73,6 +73,7 @@ describe("getEnvironmentDetails", () => {
 			customInstructions: "test instructions",
 			language: "en",
 			showRooIgnoredFiles: true,
+			betterPrivacy: false,
 		}
 
 		mockProvider = {

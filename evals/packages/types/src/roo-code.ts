@@ -765,6 +765,7 @@ export const globalSettingsSchema = z.object({
 	maxWorkspaceFiles: z.number().optional(),
 	showRooIgnoredFiles: z.boolean().optional(),
 	maxReadFileLine: z.number().optional(),
+	betterPrivacy: z.boolean().optional(),
 
 	terminalOutputLineLimit: z.number().optional(),
 	terminalShellIntegrationTimeout: z.number().optional(),
@@ -843,6 +844,7 @@ const globalSettingsRecord: GlobalSettingsRecord = {
 	maxWorkspaceFiles: undefined,
 	showRooIgnoredFiles: undefined,
 	maxReadFileLine: undefined,
+	betterPrivacy: undefined,
 
 	terminalOutputLineLimit: undefined,
 	terminalShellIntegrationTimeout: undefined,

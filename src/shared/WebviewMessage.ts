@@ -128,6 +128,7 @@ export interface WebviewMessage {
 		| "browserToolEnabled"
 		| "telemetrySetting"
 		| "showRooIgnoredFiles"
+		| "betterPrivacy"
 		| "testBrowserConnection"
 		| "browserConnectionResult"
 		| "remoteBrowserEnabled"

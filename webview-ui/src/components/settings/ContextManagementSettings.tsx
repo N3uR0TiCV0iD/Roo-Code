@@ -61,6 +61,7 @@ type ContextManagementSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	maxWorkspaceFiles: number
 	showRooIgnoredFiles?: boolean
 	maxReadFileLine?: number
+	betterPrivacy?: boolean
 	setCachedStateField: SetCachedStateField<
 		| "autoCondenseContext"
 		| "autoCondenseContextPercent"
@@ -70,6 +71,7 @@ type ContextManagementSettingsProps = HTMLAttributes<HTMLDivElement> & {
 		| "maxWorkspaceFiles"
 		| "showRooIgnoredFiles"
 		| "maxReadFileLine"
+		| "betterPrivacy"
 	>
 }
 
@@ -84,6 +86,7 @@ export const ContextManagementSettings = ({
 	showRooIgnoredFiles,
 	setCachedStateField,
 	maxReadFileLine,
+	betterPrivacy,
 	className,
 	...props
 }: ContextManagementSettingsProps) => {
@@ -147,6 +150,20 @@ export const ContextManagementSettings = ({
 					</VSCodeCheckbox>
 					<div className="text-vscode-descriptionForeground text-sm mt-1">
 						{t("settings:contextManagement.rooignore.description")}
+					</div>
+				</div>
+
+				<div>
+					<VSCodeCheckbox
+						checked={betterPrivacy}
+						onChange={(e: any) => setCachedStateField("betterPrivacy", e.target.checked)}
+						data-testid="better-privacy-checkbox">
+						<label className="block font-medium mb-1">
+							{t("settings:contextManagement.betterPrivacy.label")}
+						</label>
+					</VSCodeCheckbox>
+					<div className="text-vscode-descriptionForeground text-sm mt-1">
+						{t("settings:contextManagement.betterPrivacy.description")}
 					</div>
 				</div>
 

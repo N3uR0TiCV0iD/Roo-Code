@@ -421,6 +421,7 @@ describe("ClineProvider", () => {
 			browserToolEnabled: true,
 			telemetrySetting: "unset",
 			showRooIgnoredFiles: true,
+			betterPrivacy: false,
 			renderContext: "sidebar",
 			maxReadFileLine: 500,
 			cloudUserInfo: null,
@@ -767,6 +768,8 @@ describe("ClineProvider", () => {
 		expect(mockPostMessage).toHaveBeenCalled()
 		expect((await provider.getState()).showRooIgnoredFiles).toBe(false)
 	})
+
+	//TODO: Add test(?)
 
 	test("handles request delay settings messages", async () => {
 		await provider.resolveWebviewView(mockWebviewView)
