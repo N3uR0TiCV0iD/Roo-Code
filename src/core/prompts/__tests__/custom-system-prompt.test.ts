@@ -66,6 +66,7 @@ describe("File-Based Custom System Prompt", () => {
 			mockContext,
 			"test/path", // Using a relative path without leading slash
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -103,6 +104,7 @@ describe("File-Based Custom System Prompt", () => {
 			mockContext,
 			"test/path", // Using a relative path without leading slash
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -149,6 +151,7 @@ describe("File-Based Custom System Prompt", () => {
 			mockContext,
 			"test/path", // Using a relative path without leading slash
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize

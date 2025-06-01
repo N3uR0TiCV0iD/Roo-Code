@@ -6,6 +6,7 @@ import { SYSTEM_PROMPT } from "../prompts/system"
 import { MultiSearchReplaceDiffStrategy } from "../diff/strategies/multi-search-replace"
 
 import { ClineProvider } from "./ClineProvider"
+import { Task } from "../task/Task"
 
 export const generateSystemPrompt = async (provider: ClineProvider, message: WebviewMessage) => {
 	const {
@@ -20,12 +21,13 @@ export const generateSystemPrompt = async (provider: ClineProvider, message: Web
 		enableMcpServerCreation,
 		browserToolEnabled,
 		language,
+		betterPrivacy,
 		maxReadFileLine,
 	} = await provider.getState()
 
 	const diffStrategy = new MultiSearchReplaceDiffStrategy(fuzzyMatchThreshold)
 
-	const cwd = provider.cwd
+	const cwd = !betterPrivacy ? provider.cwd : Task.getLLMWorkspacePath(provider.cwd)
 
 	const mode = message.mode ?? defaultModeSlug
 	const customModes = await provider.customModesManager.getCustomModes()
@@ -55,6 +57,7 @@ export const generateSystemPrompt = async (provider: ClineProvider, message: Web
 	const systemPrompt = await SYSTEM_PROMPT(
 		provider.context,
 		cwd,
+		betterPrivacy,
 		canUseBrowserTool,
 		mcpEnabled ? provider.getMcpHub() : undefined,
 		diffStrategy,

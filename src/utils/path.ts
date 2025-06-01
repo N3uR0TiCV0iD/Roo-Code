@@ -115,3 +115,7 @@ export const getWorkspacePath = (defaultCwdPath = "") => {
 	}
 	return cwdPath
 }
+
+export const getFileName = (filePath: string) => {
+	return path.basename(filePath)
+}

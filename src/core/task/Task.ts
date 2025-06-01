@@ -54,7 +54,7 @@ import { TerminalRegistry } from "../../integrations/terminal/TerminalRegistry"
 
 // utils
 import { calculateApiCostAnthropic } from "../../shared/cost"
-import { getWorkspacePath } from "../../utils/path"
+import { getFileName, getWorkspacePath } from "../../utils/path"
 
 // prompts
 import { formatResponse } from "../prompts/responses"
@@ -123,6 +123,8 @@ export class Task extends EventEmitter<ClineEvents> {
 	readonly parentTask: Task | undefined = undefined
 	readonly taskNumber: number
 	readonly workspacePath: string
+
+	llmWorkspacePath: string
 
 	providerRef: WeakRef<ClineProvider>
 	private readonly globalStoragePath: string
@@ -217,7 +219,9 @@ export class Task extends EventEmitter<ClineEvents> {
 		this.workspacePath = parentTask
 			? parentTask.workspacePath
 			: getWorkspacePath(path.join(os.homedir(), "Desktop"))
+
 		this.instanceId = crypto.randomUUID().slice(0, 8)
+		this.llmWorkspacePath = this.workspacePath
 		this.taskNumber = -1
 
 		this.rooIgnoreController = new RooIgnoreController(this.cwd)
@@ -696,7 +700,13 @@ export class Task extends EventEmitter<ClineEvents> {
 		// messages from previous session).
 		this.clineMessages = []
 		this.apiConversationHistory = []
-		await this.providerRef.deref()?.postStateToWebview()
+
+		const provider = await this.providerRef.deref()
+		const state = await provider?.getState()
+		if (state?.betterPrivacy) {
+			this.applyBetterPrivacy()
+		}
+		provider?.postStateToWebview()
 
 		await this.say("text", task, images)
 		this.isInitialized = true
@@ -712,6 +722,19 @@ export class Task extends EventEmitter<ClineEvents> {
 			},
 			...imageBlocks,
 		])
+	}
+
+	private applyBetterPrivacy() {
+		this.llmWorkspacePath = Task.getLLMWorkspacePath(this.workspacePath)
+	}
+
+	static getLLMWorkspacePath(workspacePath: string): string {
+		const projectName = getFileName(workspacePath)
+		const isWindows = os.platform() === 'win32'
+		if (isWindows) {
+			return `c:/Projects/${projectName}`;
+		}
+		return `~/Projects/${projectName}`;
 	}
 
 	public async resumePausedTask(lastMessage: string) {
@@ -739,6 +762,12 @@ export class Task extends EventEmitter<ClineEvents> {
 	}
 
 	private async resumeTaskFromHistory() {
+		const provider = await this.providerRef.deref()
+		const state = await provider?.getState()
+		if (state?.betterPrivacy) {
+			this.applyBetterPrivacy()
+		}
+
 		const modifiedClineMessages = await this.getSavedClineMessages()
 
 		// Remove any resume messages that may have been added before
@@ -1514,6 +1543,7 @@ export class Task extends EventEmitter<ClineEvents> {
 			browserToolEnabled,
 			language,
 			maxReadFileLine,
+			betterPrivacy,
 		} = state ?? {}
 
 		return await (async () => {
@@ -1525,7 +1555,8 @@ export class Task extends EventEmitter<ClineEvents> {
 
 			return SYSTEM_PROMPT(
 				provider.context,
-				this.cwd,
+				this.llmWorkspacePath,
+				betterPrivacy ?? false,
 				(this.api.getModel().info.supportsComputerUse ?? false) && (browserToolEnabled ?? true),
 				mcpHub,
 				this.diffStrategy,

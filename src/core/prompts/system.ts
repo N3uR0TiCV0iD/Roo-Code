@@ -29,6 +29,7 @@ import {
 async function generatePrompt(
 	context: vscode.ExtensionContext,
 	cwd: string,
+	betterPrivacy: boolean,
 	supportsComputerUse: boolean,
 	mode: Mode,
 	mcpHub?: McpHub,
@@ -63,6 +64,7 @@ async function generatePrompt(
 	])
 
 	const codeIndexManager = CodeIndexManager.getInstance(context)
+	const homeDirectory = !betterPrivacy ? os.homedir() : getRedactedHomeDirectory()
 
 	const basePrompt = `${roleDefinition}
 
@@ -93,7 +95,7 @@ ${modesSection}
 
 ${getRulesSection(cwd, supportsComputerUse, effectiveDiffStrategy)}
 
-${getSystemInfoSection(cwd)}
+${getSystemInfoSection(cwd, homeDirectory)}
 
 ${getObjectiveSection()}
 
@@ -102,9 +104,18 @@ ${await addCustomInstructions(baseInstructions, globalCustomInstructions || "", 
 	return basePrompt
 }
 
+function getRedactedHomeDirectory() {
+	const isWindows = os.platform() === "win32"
+	if (isWindows) {
+		return "c:/Users/WorkDeveloper"
+	}
+	return "/home/work_developer"
+}
+
 export const SYSTEM_PROMPT = async (
 	context: vscode.ExtensionContext,
 	cwd: string,
+	betterPrivacy: boolean,
 	supportsComputerUse: boolean,
 	mcpHub?: McpHub,
 	diffStrategy?: DiffStrategy,
@@ -177,6 +188,7 @@ ${customInstructions}`
 	return generatePrompt(
 		context,
 		cwd,
+		betterPrivacy,
 		supportsComputerUse,
 		currentMode.slug,
 		mcpHub,

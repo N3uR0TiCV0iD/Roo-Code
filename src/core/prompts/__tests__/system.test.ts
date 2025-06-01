@@ -205,6 +205,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -228,6 +229,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			true, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			"1280x800", // browserViewportSize
@@ -253,6 +255,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			mockMcpHub, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -276,6 +279,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // explicitly undefined mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -299,6 +303,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			true, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			"900x600", // different viewport size
@@ -322,6 +327,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			new MultiSearchReplaceDiffStrategy(), // Use actual diff strategy from the codebase
 			undefined, // browserViewportSize
@@ -346,6 +352,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			new MultiSearchReplaceDiffStrategy(), // Use actual diff strategy from the codebase
 			undefined, // browserViewportSize
@@ -370,6 +377,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			new MultiSearchReplaceDiffStrategy(), // Use actual diff strategy from the codebase
 			undefined, // browserViewportSize
@@ -421,6 +429,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -482,6 +491,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -520,6 +530,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -553,6 +564,7 @@ describe("SYSTEM_PROMPT", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -600,6 +612,7 @@ describe("addCustomInstructions", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -623,6 +636,7 @@ describe("addCustomInstructions", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -648,6 +662,7 @@ describe("addCustomInstructions", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			mockMcpHub, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -674,6 +689,7 @@ describe("addCustomInstructions", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			mockMcpHub, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize
@@ -698,6 +714,7 @@ describe("addCustomInstructions", () => {
 			mockContext,
 			"/test/path",
 			false, // supportsComputerUse
+			false, // betterPrivacy
 			undefined, // mcpHub
 			undefined, // diffStrategy
 			undefined, // browserViewportSize

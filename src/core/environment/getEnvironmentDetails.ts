@@ -14,26 +14,50 @@ import { getApiMetrics } from "../../shared/getApiMetrics"
 import { listFiles } from "../../services/glob/list-files"
 import { TerminalRegistry } from "../../integrations/terminal/TerminalRegistry"
 import { Terminal } from "../../integrations/terminal/Terminal"
-import { arePathsEqual } from "../../utils/path"
+import { arePathsEqual, getFileName } from "../../utils/path"
 import { formatResponse } from "../prompts/responses"
 
 import { Task } from "../task/Task"
+
+function redactFilePathIfExternal(relativePath: string, redactedFilePaths: Record<string, string>): string {
+	if (relativePath.startsWith("..") || relativePath[1] == ':') { //2nd expression: Is it pointing to a different drive?
+		return getOrCreateRedactedPath(relativePath, redactedFilePaths)
+	}
+	return relativePath
+}
+
+function getOrCreateRedactedPath(relativePath: string, redactedFilePaths: Record<string, string>): string {
+	let redactedPath = redactedFilePaths[relativePath]
+	if (!redactedPath) {
+		const count = Object.keys(redactedFilePaths).length + 1
+		const fileName = getFileName(relativePath)
+		redactedPath = `../TempFolder${count}/${fileName}`
+		redactedFilePaths[relativePath] = redactedPath
+	}
+	return redactedPath
+}
 
 export async function getEnvironmentDetails(cline: Task, includeFileDetails: boolean = false) {
 	let details = ""
 
 	const clineProvider = cline.providerRef.deref()
 	const state = await clineProvider?.getState()
-	const { terminalOutputLineLimit = 500, maxWorkspaceFiles = 200 } = state ?? {}
+	const {
+		terminalOutputLineLimit = 500,
+		maxWorkspaceFiles = 200,
+		betterPrivacy,
+	} = state ?? {}
 
 	// It could be useful for cline to know if the user went from one or no
 	// file to another between messages, so we always include this context.
 	details += "\n\n# VSCode Visible Files"
 
+	const redactedFilePaths = {}
 	const visibleFilePaths = vscode.window.visibleTextEditors
 		?.map((editor) => editor.document?.uri?.fsPath)
 		.filter(Boolean)
 		.map((absolutePath) => path.relative(cline.cwd, absolutePath))
+		.map(relativePath => !betterPrivacy ? relativePath : redactFilePathIfExternal(relativePath, redactedFilePaths))
 		.slice(0, maxWorkspaceFiles)
 
 	// Filter paths through rooIgnoreController
@@ -55,6 +79,7 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 		.map((tab) => (tab.input as vscode.TabInputText)?.uri?.fsPath)
 		.filter(Boolean)
 		.map((absolutePath) => path.relative(cline.cwd, absolutePath).toPosix())
+		.map(relativePath => !betterPrivacy ? relativePath : redactFilePathIfExternal(relativePath, redactedFilePaths))
 		.slice(0, maxTabs)
 
 	// Filter paths through rooIgnoreController
@@ -188,7 +213,8 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 	const timeZoneOffsetHours = Math.floor(Math.abs(timeZoneOffset))
 	const timeZoneOffsetMinutes = Math.abs(Math.round((Math.abs(timeZoneOffset) - timeZoneOffsetHours) * 60))
 	const timeZoneOffsetStr = `${timeZoneOffset >= 0 ? "+" : "-"}${timeZoneOffsetHours}:${timeZoneOffsetMinutes.toString().padStart(2, "0")}`
-	details += `\n\n# Current Time\n${formatter.format(now)} (${timeZone}, UTC${timeZoneOffsetStr})`
+	const timeZoneStr = !betterPrivacy ? `${timeZone}, ` : ""
+	details += `\n\n# Current Time\n${formatter.format(now)} (${timeZoneStr}UTC${timeZoneOffsetStr})`
 
 	// Add context tokens information.
 	const { contextTokens, totalCost } = getApiMetrics(cline.clineMessages)
@@ -243,7 +269,7 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 	}
 
 	if (includeFileDetails) {
-		details += `\n\n# Current Workspace Directory (${cline.cwd.toPosix()}) Files\n`
+		details += `\n\n# Current Workspace Directory (${cline.llmWorkspacePath.toPosix()}) Files\n`
 		const isDesktop = arePathsEqual(cline.cwd, path.join(os.homedir(), "Desktop"))
 
 		if (isDesktop) {
